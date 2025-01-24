@@ -22,11 +22,9 @@ body {
   min-width: 100vw;
   min-height: 100vh;
   margin: 0;
+  background-color: rgb(163, 47, 240);
 }
 
 main {
   flex-grow: 1;
-}
-main:has(.back-link) {
-  text-align: center;
 }
