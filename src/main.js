@@ -13,7 +13,11 @@ const loadMoreBtn = document.querySelector('.load-more-btn');
 
 let page = 1;
 let query = '';
-let lightbox;
+let lightbox = new SimpleLightbox('.gallery-item', {
+  captions: true,
+  captionsData: 'alt',
+  captionDelay: 250,
+});
 
 loadMoreBtn.classList.add('is-hidden');
 loader.style.display = 'none';
@@ -27,6 +31,8 @@ const onFormSubmit = async event => {
     query = event.currentTarget.elements.user_query.value.trim();
 
     if (query === '') {
+      loader.style.display = 'none';
+      loadMoreBtn.classList.add('is-hidden');
       iziToast.warning({
         title: 'Warning',
         position: 'topRight',
@@ -54,26 +60,22 @@ const onFormSubmit = async event => {
     const markup = renderImageCards(data.hits);
     galleryContainer.insertAdjacentHTML('beforeend', markup);
 
-    lightbox = new SimpleLightbox('.gallery-item', {
-      captions: true,
-      captionsData: 'alt',
-      captionDelay: 250,
-    });
     lightbox.refresh();
 
     formEl.reset();
 
     if (data.totalHits > 1) {
       loadMoreBtn.classList.remove('is-hidden');
-
-      loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
     }
   } catch (error) {
     loader.style.display = 'none';
+    iziToast.error({
+      message: 'Something went wrong, please try again later.',
+      position: 'topRight',
+    });
+    console.error('Error fetching data:', error);
   }
 };
-
-formEl.addEventListener('submit', onFormSubmit);
 
 const onLoadMoreBtnClick = async event => {
   try {
@@ -93,7 +95,6 @@ const onLoadMoreBtnClick = async event => {
         message: "We're sorry, but you've reached the end of search results.",
       });
       loadMoreBtn.classList.add('is-hidden');
-      loadMoreBtn.removeEventListener('click', onLoadMoreBtnClick);
     }
     smoothScroll();
   } catch (error) {
@@ -112,3 +113,6 @@ const smoothScroll = () => {
     behavior: 'smooth',
   });
 };
+
+loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
+formEl.addEventListener('submit', onFormSubmit);
