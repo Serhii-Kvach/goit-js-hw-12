@@ -64,7 +64,7 @@ const onFormSubmit = async event => {
 
     formEl.reset();
 
-    if (data.totalHits > 1) {
+    if (data.totalHits > 15) {
       loadMoreBtn.classList.remove('is-hidden');
     }
   } catch (error) {
@@ -107,7 +107,8 @@ const onLoadMoreBtnClick = async event => {
 };
 
 const smoothScroll = () => {
-  const { height: cardHeight } = galleryContainer.getBoundingClientRect();
+  const galleryCard = document.querySelector('.gallery-item');
+  const { height: cardHeight } = galleryCard.getBoundingClientRect();
   window.scrollBy({
     top: cardHeight * 2,
     behavior: 'smooth',
